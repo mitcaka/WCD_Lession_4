@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +18,7 @@ import model.Customer;
  *
  * @author ADMIN
  */
-@WebServlet(name = "InsertCustomer", urlPatterns = {"/InsertCustomer"})
-public class InsertCustomer extends HttpServlet {
+public class DeleteCustomer extends HttpServlet {
     CustomerDAO cusDAO = new CustomerDAO();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,15 +32,8 @@ public class InsertCustomer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-           
-        String ten = request.getParameter("txtName");            
-            
-        String email = request.getParameter("txtEmail");        
-        String phone = request.getParameter("txtPhone");
-        String address = request.getParameter("txtAddress");
-        
-        Customer e = new Customer(0, ten, email, phone, address);
-        boolean check = cusDAO.insertCustomer(e);
+        String id = request.getParameter("id");
+        boolean check = cusDAO.deleteCustomerById(Integer.parseInt(id));
         if(check){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/danh-sach-khach-hang");
             dispatcher.forward(request, response);

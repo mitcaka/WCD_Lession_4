@@ -5,19 +5,21 @@
 package controller;
 
 import dao.CustomerDAO;
-import model.Customer;
 import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Customer;
 
 /**
  *
  * @author ADMIN
  */
-public class AddCustomer extends HttpServlet {
-     CustomerDAO cusDAO = new CustomerDAO();
+public class ConfirmEditCustomer extends HttpServlet {
+    CustomerDAO cusDAO = new CustomerDAO();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -30,23 +32,25 @@ public class AddCustomer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        System.out.println("hello here");
-        response.setContentType("text/html;charset=UTF-8");
+        String id = request.getParameter("txtId");   
         String ten = request.getParameter("txtName");            
         String email = request.getParameter("txtEmail");        
         String phone = request.getParameter("txtPhone");
         String address = request.getParameter("txtAddress");
         
-        Customer e = new Customer(0, ten, email, phone, address);
-//        cusDAO.insertCustomer(e);
-        System.out.println(" jhgujhghjg  " + e.getCusName());
-//        if(cusDAO.insertCustomer(e)){
-//            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("hienthi.jsp");
-//            dispatcher.forward(request, response);
-//        }else{
-//            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("hienthi.jsp");
-//            dispatcher.forward(request, response);
-//        }
+        
+        
+        Customer e = new Customer(Integer.valueOf(id), ten, email, phone, address);
+        boolean check = cusDAO.UpdateCustomerById(e);
+        if(check){
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/danh-sach-khach-hang");
+            request.setAttribute("ok", "Sua thanh cong");
+            dispatcher.forward(request, response);
+        }else{
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/danh-sach-khach-hang.jsp");
+            request.setAttribute("error", "Loi-khong the them");
+            dispatcher.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

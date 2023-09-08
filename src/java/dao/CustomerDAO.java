@@ -46,7 +46,6 @@ public class CustomerDAO {
         try {
             Class.forName("com.mysql.jdbc.Driver");  
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "root", "");
-            Statement st = connection.createStatement();
             String sql = "INSERT INTO customer(cusName,email,phone,address) "
             + "VALUES(?,?,?,?)";
             
@@ -64,6 +63,70 @@ public class CustomerDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public Customer getCustomerById(int id){
+        Connection conn = connectDB.getConnection__();
+        Customer cus = new Customer();
+        Statement st;
+        try {
+            st = conn.createStatement();
+            String query = "select * from customer where id = " + id;
+            ResultSet rs = st.executeQuery(query);
+        while(rs.next()){
+            cus.setId(id);
+            cus.setCusName(rs.getString("cusName"));
+            cus.setEmail(rs.getString("email"));
+            cus.setAddress(rs.getString("address"));
+            cus.setPhone(rs.getString("phone"));
+        }
+        return cus;
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public boolean UpdateCustomerById(Customer cus){
+        Connection conn = connectDB.getConnection__();
+        Statement st;
+        try {
+             String sqlUpdate = "UPDATE customer "
+                + "SET cusName = ? , email = ? , phone = ?, address = ?"
+                + "WHERE id = ?";
+             PreparedStatement pr = conn.prepareStatement(sqlUpdate,
+                              Statement.RETURN_GENERATED_KEYS);
+             pr.setString(1,cus.getCusName());             
+             pr.setString(2,cus.getEmail());
+             pr.setString(3,cus.getPhone());
+             pr.setString(4,cus.getAddress());
+             pr.setInt(5,cus.getId());
+            int rowAffected = pr.executeUpdate();
+        if(rowAffected == 1)
+        {
+           return true;
+        }
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean deleteCustomerById(int id) {
+        Connection conn = connectDB.getConnection__();
+        Statement st;
+        try {
+            st = conn.createStatement();
+            String query = "delete from customer where id = " + id;
+        int rowAffected = st.executeUpdate(query);
+        if(rowAffected == 1)
+        {
+           return true;
+        }
+        } catch (SQLException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
