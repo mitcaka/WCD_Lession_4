@@ -40,7 +40,7 @@ public class CustomerServlet extends HttpServlet {
                 lstCus.add(new Customer(2,"null", "null", "null", "null"));
             }
             request.setAttribute("lstCus", lstCus);
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/customer.jsp");
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/customer2.jsp");
             dispatcher.forward(request, response);
     }
 
